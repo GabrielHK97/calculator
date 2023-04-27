@@ -20,12 +20,24 @@ export default function Calculator() {
   const [secondRegister, setSecondRegister] = useState("0");
   const [operationRegister, setOperationRegister] = useState(noOperation);
   const [keepCalculating, setKeepCalculating] = useState(false);
+  const [clearAll, setClearAll] = useState(true);
 
   useEffect(() => {
     operationRegister.toggle();
   }, [operationRegister]);
 
-  function reset(): void {}
+  function reset(): void {
+    if (clearAll) {
+      operationRegister.untoggle();
+      setOperationRegister(noOperation);
+      setFirstRegister("0");
+    } else {
+      operationRegister.toggle();
+      setClearAll(true);
+    }
+    setSecondRegister("0");
+    setScreenValue("0");
+  }
 
   function changeSignal(): void {
     const invertSignal = (current: string) => {
@@ -73,6 +85,10 @@ export default function Calculator() {
   }
 
   function setDigitOnScreen(digit: string): void {
+    setClearAll(false);
+    if (keepCalculating) {
+      setSecondRegister("0");
+    }
     if (operationRegister.getToggled()) operationRegister.untoggle();
     const pushDigit = (current: string) => {
       const number = current === "0" ? digit : current + digit;
@@ -99,7 +115,7 @@ export default function Calculator() {
           <div className="screen">{screenValue}</div>
           <div className="pad">
             <div className="button reset" onClick={() => reset()}>
-              C
+              {clearAll ? "AC" : "C"}
             </div>
             <div className="button reset" onClick={() => changeSignal()}>
               +/-
