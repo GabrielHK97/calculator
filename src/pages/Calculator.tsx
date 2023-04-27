@@ -22,10 +22,6 @@ export default function Calculator() {
   const [keepCalculating, setKeepCalculating] = useState(false);
   const [clearAll, setClearAll] = useState(true);
 
-  useEffect(() => {
-    operationRegister.toggle();
-  }, [operationRegister]);
-
   function reset(): void {
     if (clearAll) {
       operationRegister.untoggle();
@@ -79,9 +75,12 @@ export default function Calculator() {
   }
 
   function setOperation(operation: Operation): void {
-    keepCalculating ? setKeepCalculating(false) : calculate();
+    if (firstRegister != "0" || secondRegister != "0")
+      keepCalculating ? setKeepCalculating(false) : calculate();
     setSecondRegister("0");
     setOperationRegister(operation);
+    operationRegister.untoggle();
+    operation.toggle();
   }
 
   function setDigitOnScreen(digit: string): void {
